@@ -12,6 +12,22 @@ Window {
     visible: true
     title: qsTr("Qt QML video")
 
+    Rectangle {
+        id: rectangle
+        anchors.fill: parent
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: "#ffffff"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#000000"
+            }
+        }
+    }
+
     Label {
         text: qsTr("Select video filter")
         anchors.verticalCenter: parent.verticalCenter
@@ -20,12 +36,14 @@ Window {
         anchors.verticalCenterOffset: -32
         anchors.horizontalCenterOffset: 1
         anchors.horizontalCenter: parent.horizontalCenter
+        enabled: btnPath.text == "Select folder path" ? false : true
     }
 
     Button {
         id: btnPath
         text: qsTr("Select folder path")
         anchors.verticalCenter: parent.verticalCenter
+        flat: false
         anchors.verticalCenterOffset: -85
         anchors.horizontalCenterOffset: 1
         anchors.horizontalCenter: parent.horizontalCenter
@@ -42,13 +60,13 @@ Window {
         Button{
             id: btnRaw
             text: qsTr("Raw videos")
-            onClicked: openFileDialog.open()
+            enabled: btnPath.text == "Select folder path" ? false : true
         }
 
         Button {
             id: btnEdited
             text: qsTr("Edited videos")
-            onClicked: openFolderDialog.open()
+            enabled: btnPath.text == "Select folder path" ? false : true
         }
     }
     FolderDialog {
@@ -59,4 +77,5 @@ Window {
             btnPath.text = openFolderDialog.folder
         }
     }
+
 }
