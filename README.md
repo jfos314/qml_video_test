@@ -1,4 +1,4 @@
-# Project created to solve and share task for work interview
+# Project created to solve and share task for job interview
 
 ## Short description
 
