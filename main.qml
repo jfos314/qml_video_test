@@ -12,6 +12,9 @@ Window {
     visible: true
     title: qsTr("Qt QML video")
 
+    property string folderFullName: ""
+    property int selectedRaw: -1
+
     Rectangle {
         id: rectangle
         anchors.fill: parent
@@ -20,7 +23,6 @@ Window {
                 position: 0
                 color: "#ffffff"
             }
-
             GradientStop {
                 position: 1
                 color: "#000000"
@@ -36,12 +38,12 @@ Window {
         anchors.verticalCenterOffset: -32
         anchors.horizontalCenterOffset: 1
         anchors.horizontalCenter: parent.horizontalCenter
-        enabled: btnPath.text == "Select folder path" ? false : true
+        enabled: folderFullName == "" ? false : true//btnPath.text == "Select folder path" ? false : true
     }
 
     Button {
         id: btnPath
-        text: qsTr("Select folder path")
+        text: folderFullName == "" ? qsTr("Select folder path") : folderFullName
         anchors.verticalCenter: parent.verticalCenter
         flat: false
         anchors.verticalCenterOffset: -85
@@ -60,22 +62,41 @@ Window {
         Button{
             id: btnRaw
             text: qsTr("Raw videos")
-            enabled: btnPath.text == "Select folder path" ? false : true
+            enabled: folderFullName == "" ? false : true
+            onClicked: {
+                selectedRaw = 1
+                videoList.editedOnly = false
+            }
         }
 
         Button {
             id: btnEdited
             text: qsTr("Edited videos")
-            enabled: btnPath.text == "Select folder path" ? false : true
+            enabled: folderFullName == "" ? false : true
+            onClicked: {
+                selectedRaw = 0
+                videoList.editedOnly = true
+            }
         }
     }
+
+    VideoList {
+        id: videoList
+        y: 351
+        height: parent.height * 0.3
+        visible: selectedRaw == -1 ? false : true
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+    }
+
     FolderDialog {
         id: openFolderDialog
         title: qsTr("Select video folder")
         folder: StandardPaths.standardLocations(StandardPaths.MoviesLocation)[0]
         onAccepted: {
-            btnPath.text = openFolderDialog.folder
+            folderFullName = openFolderDialog.folder
+            btnPath.text = folderFullName
+            videoList.folderName = folderFullName
         }
     }
-
 }
