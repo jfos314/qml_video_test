@@ -4,5 +4,6 @@
         <file>VideoList.qml</file>
         <file>video_edit_ico.png</file>
         <file>MainView.qml</file>
+        <file>PlayOrEditPage.qml</file>
     </qresource>
 </RCC>

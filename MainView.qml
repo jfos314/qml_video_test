@@ -3,7 +3,8 @@ import QtQuick.Controls 2.15
 import Qt.labs.platform 1.0
 
 Item {
-    id: mainView
+    id: item1
+    //id: mainView
 
     Rectangle {
         id: rectangle
@@ -90,3 +91,9 @@ Item {
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/

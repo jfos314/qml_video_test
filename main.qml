@@ -18,10 +18,6 @@ Window {
     StackView{
         id: stackView
         anchors.fill: parent
-        initialItem: mainView
-    }
-
-    MainView {
-        id: mainView
+        initialItem: Qt.resolvedUrl("qrc:/MainView.qml")
     }
 }

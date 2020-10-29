@@ -53,15 +53,22 @@ ListView {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-
+                            stackView.push(Qt.resolvedUrl("qrc:/PlayOrEditPage.qml"), {"videoToPlay":folderName + "/" + fileName, "edit": 0})
                         }
                     }
                 }
                 Image {
                     id: videoEditIcon
+                    visible: editedOnly ? false : true
                     width: videoPreview.height * 0.5
                     height: videoPreview.height * 0.5
                     source: "video_edit_ico.png"
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            stackView.push(Qt.resolvedUrl("qrc:/PlayOrEditPage.qml"), {"videoToPlay":folderName + "/" + fileName, "edit": 1})
+                        }
+                    }
                 }
             }
             Text {
