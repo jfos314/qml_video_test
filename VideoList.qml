@@ -29,48 +29,48 @@ ListView {
         nameFilters: editedOnly ? ["edtd_*.mp4", "edtd_*.avi"] : ["*.mp4", "*.avi"]
     }
 
-        Label {
-            text: count == 0 ? qsTr("No videos in foder, please select some other") : ""
-            enabled: folderFullName == "" ? false : true
-            color: "white"
-        }
-        Component {
-            id: fileDelegate
-            Column {
-                id: row1
-                spacing: 10
-                Row {
-                    Video {
-                        id: videoPreview
-                        width: listView.height * 0.5
-                        height: listView.height * 0.5
-                        autoPlay: true
-                        source: folderName + "/" + fileName
-                        onPlaying: {
-                            videoPreview.seek(videoPreview.duration/2)
-                            videoPreview.pause()
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-
-                            }
-                        }
+    Label {
+        text: count == 0 ? qsTr("No videos in foder, please select some other") : ""
+        enabled: folderFullName == "" ? false : true
+        color: "white"
+    }
+    Component {
+        id: fileDelegate
+        Column {
+            id: row1
+            spacing: 10
+            Row {
+                Video {
+                    id: videoPreview
+                    width: listView.height * 0.5
+                    height: listView.height * 0.5
+                    autoPlay: true
+                    source: folderName + "/" + fileName
+                    onPlaying: {
+                        videoPreview.seek(videoPreview.duration/2)
+                        videoPreview.pause()
                     }
-                    Image {
-                        id: videoEditIcon
-                        width: videoPreview.height * 0.5
-                        height: videoPreview.height * 0.5
-                        source: "video_edit_ico.png"
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+
+                        }
                     }
                 }
-                Text {
-                    text: fileName
-                    color: "white"
-                    font.bold: true
+                Image {
+                    id: videoEditIcon
+                    width: videoPreview.height * 0.5
+                    height: videoPreview.height * 0.5
+                    source: "video_edit_ico.png"
                 }
             }
+            Text {
+                text: fileName
+                color: "white"
+                font.bold: true
+            }
         }
+    }
     model: folderModel
     delegate: fileDelegate
 
