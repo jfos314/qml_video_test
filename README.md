@@ -1,4 +1,6 @@
-# Project created to solve and share task for job interview
+# Video browser, player and editor (simple predefined overlays)
+
+This is a simple Qt Quick C++ app. Task was to create simple app that
 
 ## Short description
 
