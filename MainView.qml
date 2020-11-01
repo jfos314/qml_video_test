@@ -29,7 +29,7 @@ Item {
         anchors.verticalCenterOffset: -32
         anchors.horizontalCenterOffset: 1
         anchors.horizontalCenter: parent.horizontalCenter
-        enabled: folderFullName == "" ? false : true//btnPath.text == "Select folder path" ? false : true
+        enabled: folderFullName == "" ? false : true
     }
 
     Button {
@@ -91,9 +91,3 @@ Item {
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/

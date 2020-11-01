@@ -12,12 +12,15 @@ Item {
     property color gradient_from
     property color gradient_to
     property bool increment: true
+    property string out_path: ""
+    property int image_no: 0
 
     Rectangle {
         id: rectBackground
         anchors.fill: parent
         color: "black"
     }
+
     Video {
         id: videoPlayEdit
         width: parent.width
@@ -25,13 +28,11 @@ Item {
         autoPlay: true
         source: videoToPlay
         loops: MediaPlayer.Infinite
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                videoPlayEdit.playbackState == MediaPlayer.PlayingState ? videoPlayEdit.pause() : videoPlayEdit.play()
+        onStatusChanged: {
+            if (status == MediaPlayer.EndOfMedia) {
+                timerGraber.stop()
+                stackView.pop()
             }
-
         }
         Text {
             id: txtNumerical
@@ -69,7 +70,15 @@ Item {
             y: 320
             to: 10
         }
+
+        VideoOutput { //TODO: remove
+            id:videoOutput
+            source: videoPlayEdit
+            anchors.fill: parent
+        }
     }
+
+
     Button {
         text: qsTr("close")
         onClicked: stackView.pop()
@@ -84,12 +93,6 @@ Item {
         color: "#90000000"
         border.width: 0
 
-
-        Timer {
-            id: timerNumericalValue
-            interval: 300; running: true; repeat: true
-            onTriggered: txtNumerical.text = Math.ceil(Math.random()*100)
-        }
         GroupBox {
             id: groupBox
             x: 32
@@ -153,8 +156,13 @@ Item {
         }
 
         Timer {
+            id: timerNumericalValue
+            interval: 300; running: true; repeat: true
+            onTriggered: txtNumerical.text = Math.ceil(Math.random()*100)
+        }
+        Timer {
             id: timerShape
-            interval: 1000; running: true; repeat: true //TODO stavi interval na 1000 ms
+            interval: 1000; running: true; repeat: true
             onTriggered: {
                 shape_x = shape_x < videoPlayEdit.width * 0.5 ? shape_x + (Math.random() * 50) : shape_x - (Math.random() * 50)
                 shape_y = shape_y < videoPlayEdit.height * 0.5 ? shape_y + (Math.random() * 50) : shape_y - (Math.random() * 50)
@@ -170,13 +178,24 @@ Item {
             id: timerProgress
             interval: 500; running: true; repeat: true
             onTriggered: {
-                if (prgsBar.value == prgsBar.to){
+                if (prgsBar.value == prgsBar.to)
                     increment = false
-                }
-                else if (prgsBar.value == prgsBar.from) {
+                else if (prgsBar.value == prgsBar.from)
                     increment = true
-                }
                 prgsBar.value = increment == true ? prgsBar.value + 1 : prgsBar.value - 1
+            }
+        }
+
+        Timer {
+            id:timerGraber
+            interval: 41
+            repeat: true
+            onTriggered: {
+                videoPlayEdit.grabToImage(function(result) {
+                    var img_full_name = out_path + "/" + image_no + ".png"
+                    var res = result.saveToFile(img_full_name);
+                    image_no = image_no + 1
+                });
             }
         }
 
@@ -187,15 +206,20 @@ Item {
             width: 115
             height: 40
             text: qsTr("Apply")
+            onClicked: {
+                if (out_path == ""){
+                    var date = new Date()
+                    var now_utc =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+                     date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds())
+                    out_path = tempPath
+                    image_no = 0
+                    videoPlayEdit.stop()
+                    videoPlayEdit.seek(0)
+                    videoPlayEdit.loops = 1
+                    videoPlayEdit.play()
+                    timerGraber.start()
+                }
+            }
         }
-
-
-
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/

@@ -1,5 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+
+#include "exporter.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,7 +17,11 @@ int main(int argc, char *argv[])
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
+
     engine.load(url);
+
+    Exporter exporter;
+    engine.rootContext()->setContextProperty("exporter", &exporter);
 
     return app.exec();
 }
