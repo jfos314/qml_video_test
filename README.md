@@ -1,10 +1,10 @@
 # Video browser, player and editor (simple predefined overlays)
 
-This is a simple Qt Quick C++ app. Task was to create simple app that
+This is a simple Qt Quick C++ app browse, play and edit raw or edited videos.
 
-## Short description
+## Import video
 
-Create app using Qt QML that can browse, play and edit raw or edited videos.
+![select _video_ss](https://user-images.githubusercontent.com/37535693/97810793-ba2a8700-1c76-11eb-985e-06f987e6bdc5.png)
 
 ## Issues
 
