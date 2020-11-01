@@ -44,8 +44,6 @@ void task(QString video_path, itemOverlay itm1, itemOverlay itm2, itemOverlay it
     const string name = source.substr(0, pAt) + "_edt" + ".avi";
     int ex = static_cast<int>(inputVideo.get(CAP_PROP_FOURCC));
 
-    //char ext[] = {(char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0};
-
     Size S = Size((int) inputVideo.get(CAP_PROP_FRAME_WIDTH),
                   (int) inputVideo.get(CAP_PROP_FRAME_HEIGHT));
 
