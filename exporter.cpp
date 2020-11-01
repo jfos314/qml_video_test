@@ -33,12 +33,6 @@ public:
     itemOverlay(bool u, Point p){ used = u; pt = p; }
 };
 
-/*
-void Exporter::printFinished() {
-    qDebug() << "-------------------finished signal...";
-}
-*/
-
 void task(QString video_path, itemOverlay itm1, itemOverlay itm2, itemOverlay itm3)
 {
     string source = video_path.toStdString();
@@ -49,11 +43,10 @@ void task(QString video_path, itemOverlay itm1, itemOverlay itm2, itemOverlay it
         qDebug() << "video opened";
 
     string::size_type pAt = source.find_last_of('.');
-    const string NAME = source.substr(0, pAt) + "_edt" + ".avi"; //TODO: srediti filename
+    const string name = source.substr(0, pAt) + "_edt" + ".avi";
     int ex = static_cast<int>(inputVideo.get(CAP_PROP_FOURCC));
 
-    // Transform from int to char via Bitwise operators
-    char EXT[] = {(char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0};
+    char ext[] = {(char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0};
 
     Size S = Size((int) inputVideo.get(CAP_PROP_FRAME_WIDTH),
                   (int) inputVideo.get(CAP_PROP_FRAME_HEIGHT));
@@ -61,14 +54,14 @@ void task(QString video_path, itemOverlay itm1, itemOverlay itm2, itemOverlay it
     VideoWriter outputVideo;
     auto fps = inputVideo.get(CAP_PROP_FPS);
     qDebug() << "fps: " << fps;
-    outputVideo.open(NAME, ex, fps, S, true);
+    outputVideo.open(name, ex, fps, S, true);
 
     if (!outputVideo.isOpened())
         qDebug() << "Could not open the output video for write: " << source.c_str();
 
     qDebug() << "Input frame resolution: Width=" << S.width << "  Height=" << S.height
          << " of nr#: " << inputVideo.get(CAP_PROP_FRAME_COUNT);
-    qDebug() << "Input codec type: " << EXT;
+    qDebug() << "Input codec type: " << ext;
 
     Mat src, res;
     vector<Mat> spl;
@@ -123,9 +116,9 @@ void task(QString video_path, itemOverlay itm1, itemOverlay itm2, itemOverlay it
         }
         if (itm3.used) {
             if (currFrame % rndRecInterval == 0){
-                int b = b + distribution(*QRandomGenerator::global());
+                int b = distribution(*QRandomGenerator::global());
                 recUpperLeft.x = recUpperLeft.x < S.width * 0.5 ? recUpperLeft.x + distribution(*QRandomGenerator::global()) : recUpperLeft.x - distribution(*QRandomGenerator::global());
-                recUpperLeft.y = recUpperLeft.y < S.width * 0.5 ? recUpperLeft.y + distribution(*QRandomGenerator::global()) : recUpperLeft.y - distribution(*QRandomGenerator::global());
+                recUpperLeft.y = recUpperLeft.y < S.height * 0.5 ? recUpperLeft.y + distribution(*QRandomGenerator::global()) : recUpperLeft.y - distribution(*QRandomGenerator::global());
                 rec = Mat(recDim,recDim,CV_8UC3);
                     for(int y = 0; y < recDim; y++){
                        Vec3b val;
@@ -134,6 +127,7 @@ void task(QString video_path, itemOverlay itm1, itemOverlay itm2, itemOverlay it
                           rec.at<Vec3b>(y,x) = val;
                     }
             }
+            qDebug() << "UpperLeft: " << recUpperLeft.x << ", " << recUpperLeft.y;
             Rect roi(recUpperLeft, Size(recDim, recDim));
             rec.copyTo(src(roi));
        }

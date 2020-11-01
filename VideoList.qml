@@ -40,6 +40,7 @@ ListView {
             id: row1
             spacing: 10
             Row {
+                spacing: 10
                 Video {
                     id: videoPreview
                     width: listView.height * 0.5

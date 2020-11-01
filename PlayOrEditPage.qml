@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtMultimedia 5.0
 import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.0
 
 Item {
     id: playOrEditPage
@@ -9,8 +10,8 @@ Item {
     property string videoToPlayName
     property string videoToPlayPath
     property bool edit
-    property int shape_x: parent.width / 2
-    property int shape_y: parent.height / 2
+    property int shape_x: videoPlayEdit.width * sldO2x.value
+    property int shape_y: videoPlayEdit.height * sldO2y.value
     property color gradient_from
     property color gradient_to
     property bool increment: true
@@ -33,15 +34,14 @@ Item {
                 stackView.pop()
             }
         }
+
         Text {
             id: txtNumerical
+            x: videoPlayEdit.width * sldO1x.value
+            y: videoPlayEdit.height * sldO1y.value
             visible: chkNumerical.checked ? edit ? true : false : false
             color: "white"
-            anchors.verticalCenter: parent.verticalCenter
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
             wrapMode: Text.Wrap
-            anchors.horizontalCenter: parent.horizontalCenter
         }
         Rectangle {
             id: rectMovingGradient
@@ -64,9 +64,9 @@ Item {
         }
         ProgressBar {
             id: prgsBar
+            x: videoPlayEdit.width * sldO3x.value
+            y: videoPlayEdit.height * sldO3y.value
             visible: chkProgress.checked ? edit ? true : false : false
-            x: 220
-            y: 320
             to: 10
         }
     }
@@ -80,128 +80,140 @@ Item {
     Rectangle {
         id: recEditControls
         visible: edit ? true : false
-        x: parent.width - 200
-        width: 200
+        x: parent.width - 250
+        width: 250
         height: parent.height
-        color: "#90000000"
+        color: "#90ffffff"
         border.width: 0
-
-        GroupBox {
-            id: groupBox
-            x: 32
-            y: 8
-            width: 160
-            height: 128
-            title: qsTr("Numerical")
-            CheckBox {
-                id: chkNumerical
-                x: -3
-                y: 9
-                width: 142
-                height: 40
-                text: qsTr("Numerical")
-                checked: true
-                onClicked: {
-                    if (chkNumerical.checked) timerNumericalValue.start()
-                    else
-                        timerNumericalValue.stop()
+        ColumnLayout {
+            spacing: 10
+            anchors.centerIn: parent
+            GroupBox {
+                anchors.centerIn: parent.Center
+                title: qsTr("Numerical")
+                ColumnLayout {
+                    CheckBox {
+                        id: chkNumerical
+                        text: qsTr("Numerical")
+                        checked: true
+                        onClicked: {
+                            if (chkNumerical.checked) timerNumericalValue.start()
+                            else timerNumericalValue.stop()
+                        }
+                    }
+                    Slider {
+                        id: sldO1x
+                        value: 0.5
+                    }
+                    Slider {
+                        id: sldO1y
+                        value: 0.5
+                    }
                 }
             }
-
-            Slider {
-                id: slider
-                value: 0.5
+            GroupBox {
+                anchors.left: parent.left
+                title: qsTr("Shape")
+                ColumnLayout {
+                    CheckBox {
+                        id: chkShape
+                        text: qsTr("Shape")
+                        checked: true
+                        onClicked: {
+                                if (chkShape.checked) timerShape.start()
+                                else timerShape.stop()
+                        }
+                    }
+                    Slider {
+                        id: sldO2x
+                        value: 0.5
+                        onValueChanged: shape_x = videoPlayEdit.width * sldO2x.value
+                    }
+                    Slider {
+                        id: sldO2y
+                        value: 0.5
+                        onValueChanged: shape_y = videoPlayEdit.width * sldO2y.value
+                    }
+                }
             }
-
-            Slider {
-                id: slider1
-                x: 5
-                y: 46
-                value: 0.5
+            GroupBox {
+                anchors.left: parent.left
+                title: qsTr("Progress")
+                ColumnLayout {
+                    CheckBox {
+                        id: chkProgress
+                        text: qsTr("Progress")
+                        checked: true
+                        onClicked: {
+                                if (chkProgress.checked) timerProgress.start()
+                                else timerProgress.stop()
+                        }
+                    }
+                    Slider {
+                        id: sldO3x
+                        value: 0.5
+                    }
+                    Slider {
+                        id: sldO3y
+                        value: 0.5
+                    }
+                }
             }
-        }
-        CheckBox {
-            id: chkShape
-            x: 68
-            y: 150
-            text: qsTr("Shape")
-            checked: true
-            onClicked: {
-                if (chkShape.checked) timerShape.start()
-                else timerShape.stop()
-            }
-        }
-        CheckBox {
-            id: chkProgress
-            x: 63
-            y: 276
-            text: qsTr("Progress")
-            checked: true
-            onClicked: {
-                if (chkProgress.checked)
-                    timerProgress.start()
-                else
+            Button {
+                id: button
+                text: qsTr("Apply")
+                onClicked: {
+                    videoPlayEdit.pause()
+                    timerNumericalValue.stop()
                     timerProgress.stop()
+                    timerShape.stop()
+                    dialogProcessing.open()
+                    exporter.export_video(videoToPlayPath + "/" + videoToPlayName,
+                                chkNumerical.checked, 150, 100,
+                                chkProgress.checked, 200, 400,
+                                chkShape.checked, 500, 300)
+                }
             }
         }
-        Timer {
-            id: timerNumericalValue
-            interval: 300; running: true; repeat: true
-            onTriggered: txtNumerical.text = Math.ceil(Math.random()*100)
+    }
+    Dialog {
+        id: dialogProcessing
+        title: qsTr("Please wait...")
+        standardButtons: Dialog.Ok
+        Text {
+            id: name
+            text: qsTr("Finished")
         }
-        Timer {
-            id: timerShape
-            interval: 1000; running: true; repeat: true
-            onTriggered: {
-                shape_x = shape_x < videoPlayEdit.width * 0.5 ? shape_x + (Math.random() * 50) : shape_x - (Math.random() * 50)
-                shape_y = shape_y < videoPlayEdit.height * 0.5 ? shape_y + (Math.random() * 50) : shape_y - (Math.random() * 50)
-                gradient_from.r = gradient_from.r + 10
-                gradient_from.g = gradient_from.g + 20
-                gradient_from.g = gradient_from.g + 30
-                gradient_to.r = gradient_to.r - 10
-                gradient_to.g = gradient_to.g - 20
-                gradient_to.g = gradient_to.g - 30
-            }
+        onAccepted: stackView.pop()
+    }
+    Timer {
+        id: timerNumericalValue
+        interval: 300; running: true; repeat: true
+        onTriggered: txtNumerical.text = Math.ceil(Math.random()*100)
+    }
+    Timer {
+        id: timerShape
+        interval: 1000; running: true; repeat: true
+        onTriggered: {
+            shape_x = shape_x < videoPlayEdit.width * 0.5 ? shape_x + (Math.random() * 50) : shape_x - (Math.random() * 50)
+            shape_y = shape_y < videoPlayEdit.height * 0.5 ? shape_y + (Math.random() * 50) : shape_y - (Math.random() * 50)
+            gradient_from.r = gradient_from.r + 10
+            gradient_from.g = gradient_from.g + 20
+            gradient_from.g = gradient_from.g + 30
+            gradient_to.r = gradient_to.r - 10
+            gradient_to.g = gradient_to.g - 20
+            gradient_to.g = gradient_to.g - 30
         }
-        Timer {
-            id: timerProgress
-            interval: 500; running: true; repeat: true
-            onTriggered: {
-                if (prgsBar.value == prgsBar.to)
-                    increment = false
-                else if (prgsBar.value == prgsBar.from)
-                    increment = true
-                prgsBar.value = increment == true ? prgsBar.value + 1 : prgsBar.value - 1
-            }
-        }
-        Button {
-            id: button
-            x: 68
-            y: 418
-            width: 115
-            height: 40
-            text: qsTr("Apply")
-            onClicked: {
-                videoPlayEdit.pause()
-                timerNumericalValue.stop()
-                timerProgress.stop()
-                timerShape.stop()
-                dialogProcessing.open()
-                exporter.export_video(videoToPlayPath + "/" + videoToPlayName,
-                            chkNumerical.checked, 150, 100,
-                            chkProgress.checked, 200, 400,
-                            chkShape.checked, 500, 300)
-            }
-        }
-        Dialog {
-            id: dialogProcessing
-            title: qsTr("Processing video, please wait...")
-            standardButtons: Dialog.Ok
-            Text {
-                id: name
-                text: qsTr("Finished")
-            }
-            onAccepted: stackView.pop()
+    }
+    Timer {
+        id: timerProgress
+        interval: 500; running: true; repeat: true
+        onTriggered: {
+            if (prgsBar.value == prgsBar.to)
+                increment = false
+            else if (prgsBar.value == prgsBar.from)
+                increment = true
+            prgsBar.value = increment == true ? prgsBar.value + 1 : prgsBar.value - 1
         }
     }
 }

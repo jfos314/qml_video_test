@@ -14,7 +14,6 @@ signals:
 
 public slots:
     void export_video(QString video_path, bool o1, int oX1, int oY1, bool o2, int oX2, int oY2, bool o3, int oX3, int oY3);
-    //static void printFinished();
 
 private:
     double progress;

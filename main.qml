@@ -7,8 +7,8 @@ import Qt.labs.platform 1.0
 
 Window {
     id: window
-    width: 640
-    height: 480
+    width: 860
+    height: 640
     visible: true
     title: qsTr("Qt QML video")
 
