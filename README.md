@@ -15,5 +15,10 @@ If user selected video editing, controls for overlays are displayed on rightside
 2. Rectangle that randomly changes position and gradient color every 1000 ms
 3. Progress bar that is incrementing until MAX value and decrementing until MIN value every 500 ms
 
+![export_finished_ss](https://user-images.githubusercontent.com/37535693/97811069-6620a200-1c78-11eb-8984-7db9c32af330.png)
+
+## Exported video
+
+OpenCV is used to add overlays and to export video.
 
 
