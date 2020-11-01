@@ -39,29 +39,23 @@ void task(QString video_path, itemOverlay itm1, itemOverlay itm2, itemOverlay it
     VideoCapture inputVideo(source);
     if (!inputVideo.isOpened())
         qDebug() << "Could not open the input video: " << source.c_str();
-    else
-        qDebug() << "video opened";
 
     string::size_type pAt = source.find_last_of('.');
     const string name = source.substr(0, pAt) + "_edt" + ".avi";
     int ex = static_cast<int>(inputVideo.get(CAP_PROP_FOURCC));
 
-    char ext[] = {(char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0};
+    //char ext[] = {(char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0};
 
     Size S = Size((int) inputVideo.get(CAP_PROP_FRAME_WIDTH),
                   (int) inputVideo.get(CAP_PROP_FRAME_HEIGHT));
 
     VideoWriter outputVideo;
     auto fps = inputVideo.get(CAP_PROP_FPS);
-    qDebug() << "fps: " << fps;
+
     outputVideo.open(name, ex, fps, S, true);
 
     if (!outputVideo.isOpened())
         qDebug() << "Could not open the output video for write: " << source.c_str();
-
-    qDebug() << "Input frame resolution: Width=" << S.width << "  Height=" << S.height
-         << " of nr#: " << inputVideo.get(CAP_PROP_FRAME_COUNT);
-    qDebug() << "Input codec type: " << ext;
 
     Mat src, res;
     vector<Mat> spl;
@@ -127,7 +121,6 @@ void task(QString video_path, itemOverlay itm1, itemOverlay itm2, itemOverlay it
                           rec.at<Vec3b>(y,x) = val;
                     }
             }
-            qDebug() << "UpperLeft: " << recUpperLeft.x << ", " << recUpperLeft.y;
             Rect roi(recUpperLeft, Size(recDim, recDim));
             rec.copyTo(src(roi));
        }

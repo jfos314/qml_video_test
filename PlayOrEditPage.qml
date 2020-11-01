@@ -178,7 +178,7 @@ Item {
     }
     Dialog {
         id: dialogProcessing
-        title: qsTr("Please wait...")
+        title: qsTr("Saving video")
         standardButtons: Dialog.Ok
         Text {
             id: name
