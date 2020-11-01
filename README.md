@@ -21,4 +21,4 @@ If user selected video editing, controls for overlays are displayed on rightside
 
 OpenCV is used to add overlays and to export video.
 
-
+![side_by_side_ss](https://user-images.githubusercontent.com/37535693/97811120-bc8de080-1c78-11eb-969b-18ea189d3b58.png)
