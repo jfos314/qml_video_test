@@ -1,32 +1,31 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtMultimedia 5.0
+import QtQuick.Dialogs 1.2
 
 Item {
     id: playOrEditPage
 
-    property string videoToPlay
+    property string videoToPlayName
+    property string videoToPlayPath
     property bool edit
     property int shape_x: parent.width / 2
     property int shape_y: parent.height / 2
     property color gradient_from
     property color gradient_to
     property bool increment: true
-    property string out_path: ""
-    property int image_no: 0
 
     Rectangle {
         id: rectBackground
         anchors.fill: parent
         color: "black"
     }
-
     Video {
         id: videoPlayEdit
         width: parent.width
         height: parent.height
         autoPlay: true
-        source: videoToPlay
+        source: videoToPlayPath + "/" + videoToPlayName
         loops: MediaPlayer.Infinite
         onStatusChanged: {
             if (status == MediaPlayer.EndOfMedia) {
@@ -70,12 +69,6 @@ Item {
             y: 320
             to: 10
         }
-
-        VideoOutput { //TODO: remove
-            id:videoOutput
-            source: videoPlayEdit
-            anchors.fill: parent
-        }
     }
 
 
@@ -100,16 +93,6 @@ Item {
             width: 160
             height: 128
             title: qsTr("Numerical")
-
-            TextField {
-                id: textField
-                x: 0
-                y: 53
-                width: 136
-                height: 40
-                placeholderText: qsTr("Text Field")
-            }
-
             CheckBox {
                 id: chkNumerical
                 x: -3
@@ -119,14 +102,24 @@ Item {
                 text: qsTr("Numerical")
                 checked: true
                 onClicked: {
-                    if (chkNumerical.checked)
-                        timerNumericalValue.start()
+                    if (chkNumerical.checked) timerNumericalValue.start()
                     else
                         timerNumericalValue.stop()
                 }
             }
-        }
 
+            Slider {
+                id: slider
+                value: 0.5
+            }
+
+            Slider {
+                id: slider1
+                x: 5
+                y: 46
+                value: 0.5
+            }
+        }
         CheckBox {
             id: chkShape
             x: 68
@@ -134,13 +127,10 @@ Item {
             text: qsTr("Shape")
             checked: true
             onClicked: {
-                if (chkShape.checked)
-                    timerShape.start()
-                else
-                    timerShape.stop()
+                if (chkShape.checked) timerShape.start()
+                else timerShape.stop()
             }
         }
-
         CheckBox {
             id: chkProgress
             x: 63
@@ -154,7 +144,6 @@ Item {
                     timerProgress.stop()
             }
         }
-
         Timer {
             id: timerNumericalValue
             interval: 300; running: true; repeat: true
@@ -185,20 +174,6 @@ Item {
                 prgsBar.value = increment == true ? prgsBar.value + 1 : prgsBar.value - 1
             }
         }
-
-        Timer {
-            id:timerGraber
-            interval: 41
-            repeat: true
-            onTriggered: {
-                videoPlayEdit.grabToImage(function(result) {
-                    var img_full_name = out_path + "/" + image_no + ".png"
-                    var res = result.saveToFile(img_full_name);
-                    image_no = image_no + 1
-                });
-            }
-        }
-
         Button {
             id: button
             x: 68
@@ -207,19 +182,32 @@ Item {
             height: 40
             text: qsTr("Apply")
             onClicked: {
-                if (out_path == ""){
-                    var date = new Date()
-                    var now_utc =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
-                     date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds())
-                    out_path = tempPath
-                    image_no = 0
-                    videoPlayEdit.stop()
-                    videoPlayEdit.seek(0)
-                    videoPlayEdit.loops = 1
-                    videoPlayEdit.play()
-                    timerGraber.start()
-                }
+                videoPlayEdit.pause()
+                timerNumericalValue.stop()
+                timerProgress.stop()
+                timerShape.stop()
+                dialogProcessing.open()
+                exporter.export_video(videoToPlayPath + "/" + videoToPlayName,
+                            chkNumerical.checked, 150, 100,
+                            chkProgress.checked, 200, 400,
+                            chkShape.checked, 500, 300)
             }
+        }
+        Dialog {
+            id: dialogProcessing
+            title: qsTr("Processing video, please wait...")
+            standardButtons: Dialog.Ok
+            Text {
+                id: name
+                text: qsTr("Finished")
+            }
+            onAccepted: stackView.pop()
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/

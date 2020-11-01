@@ -34,7 +34,7 @@ Item {
 
     Button {
         id: btnPath
-        text: folderFullName == "" ? qsTr("Select folder path") : folderFullName
+        text: folderFullName == "" ? qsTr("Select folder") : folderFullName
         anchors.verticalCenter: parent.verticalCenter
         flat: false
         anchors.verticalCenterOffset: -85

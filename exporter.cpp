@@ -33,6 +33,12 @@ public:
     itemOverlay(bool u, Point p){ used = u; pt = p; }
 };
 
+/*
+void Exporter::printFinished() {
+    qDebug() << "-------------------finished signal...";
+}
+*/
+
 void task(QString video_path, itemOverlay itm1, itemOverlay itm2, itemOverlay itm3)
 {
     string source = video_path.toStdString();
@@ -120,7 +126,6 @@ void task(QString video_path, itemOverlay itm1, itemOverlay itm2, itemOverlay it
                 int b = b + distribution(*QRandomGenerator::global());
                 recUpperLeft.x = recUpperLeft.x < S.width * 0.5 ? recUpperLeft.x + distribution(*QRandomGenerator::global()) : recUpperLeft.x - distribution(*QRandomGenerator::global());
                 recUpperLeft.y = recUpperLeft.y < S.width * 0.5 ? recUpperLeft.y + distribution(*QRandomGenerator::global()) : recUpperLeft.y - distribution(*QRandomGenerator::global());
-                //shape_y = shape_y < videoPlayEdit.height * 0.5 ? shape_y + (Math.random() * 50) : shape_y - (Math.random() * 50)
                 rec = Mat(recDim,recDim,CV_8UC3);
                     for(int y = 0; y < recDim; y++){
                        Vec3b val;
@@ -148,5 +153,5 @@ void Exporter::export_video(QString video_path, bool o1, int oX1, int oY1, bool 
     watcher->setFuture(f);
     f.waitForFinished(); //if wait removed, GUI unblocked, but no signal to GUI that process finished
 
-    //connect(watcher, SIGNAL(finished()), watcher, SLOT(deleteLater()));
+    //connect(watcher, SIGNAL(finished()), watcher, SLOT(printFinished())); //TODO: srediti na neki način
 }

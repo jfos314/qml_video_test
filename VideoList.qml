@@ -26,7 +26,7 @@ ListView {
         showDirs: true
         showDirsFirst: true
         folder: folderName
-        nameFilters: editedOnly ? ["edtd_*.mp4", "edtd_*.avi"] : ["*.mp4", "*.avi"]
+        nameFilters: editedOnly ? ["*_edt.mp4", "*_edt.avi"] : ["*.mp4", "*.avi"]
     }
 
     Label {
@@ -52,22 +52,18 @@ ListView {
                     }
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: {
-                            stackView.push(Qt.resolvedUrl("qrc:/PlayOrEditPage.qml"), {"videoToPlay":folderName + "/" + fileName, "edit": 0})
-                        }
+                        onClicked: stackView.push(Qt.resolvedUrl("qrc:/PlayOrEditPage.qml"), {"videoToPlayName":fileName, "videoToPlayPath":folderName, "edit": 0})
                     }
                 }
                 Image {
                     id: videoEditIcon
-                    visible: editedOnly ? false : true
+                    visible: editedOnly ? false : fileName.includes("_edt.") ? false : true
                     width: videoPreview.height * 0.5
                     height: videoPreview.height * 0.5
                     source: "video_edit_ico.png"
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: {
-                            stackView.push(Qt.resolvedUrl("qrc:/PlayOrEditPage.qml"), {"videoToPlay":folderName + "/" + fileName, "edit": 1})
-                        }
+                        onClicked: stackView.push(Qt.resolvedUrl("qrc:/PlayOrEditPage.qml"), {"videoToPlayName":fileName, "videoToPlayPath":folderName, "edit": 1})
                     }
                 }
             }
